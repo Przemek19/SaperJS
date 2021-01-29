@@ -117,7 +117,7 @@ const createGame = (xSize, ySize, bombsCount) => {
   let possibleStarts = [];
   for (let y = 1; y <= ySize; y++) {
     for (let x = 1; x <= xSize; x++) {
-      if (getBombsNextToButton(x, y) == 0) {
+      if (getBombsNextToButton(x, y) == 0 && !GAME.bombsPosition.find(bp => bp.x == x && bp.y == y)) {
         possibleStarts.push({x: x, y: y});
       }
     }
