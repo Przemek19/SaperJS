@@ -33,7 +33,7 @@ const GAME = {
   buttons: [],
   bombsPosition: [],
   bombsToFind: 0,
-  blocksToRemove: 0,
+  blocksToRemove: 0
 };
 
 for (let i in difficulty) {
@@ -114,10 +114,21 @@ const createGame = (xSize, ySize, bombsCount) => {
     }
     boardBox.innerHTML += '<br>';
   }
+  let possibleStarts = [];
+  for (let y = 1; y <= ySize; y++) {
+    for (let x = 1; x <= xSize; x++) {
+      if (getBombsNextToButton(x, y) == 0) {
+        possibleStarts.push({x: x, y: y});
+      }
+    }
+  }
+  let randomPossibleStart = possibleStarts[getRandomNumber(0, possibleStarts.length - 1)];
+  clickOn(randomPossibleStart.x, randomPossibleStart.y);
 }
 
-const clickOn = (x, y) => {
+const clickOn = (x, y, nextClick) => {
   if (GAME.lost) return;
+
   let bttn = getButtonByPosition(x, y);
   if (!bttn) return;
   if (bttn.innerHTML == '🚩') return;
@@ -130,6 +141,7 @@ const clickOn = (x, y) => {
     bttn.innerHTML = colourNumber(bombsCount);
     return;
   }
+  if (nextClick) return;
 
   if (getButtonByPosition(x - 1, y)) clickOn(x - 1, y);
   if (getButtonByPosition(x + 1, y)) clickOn(x + 1, y);
@@ -138,15 +150,23 @@ const clickOn = (x, y) => {
 
   if (!(getBombsNextToButton(x - 1, y) && getBombsNextToButton(x, y - 1))) {
     if (getButtonByPosition(x - 1, y - 1)) clickOn(x - 1, y - 1); // L T
+  } else {
+    if (getButtonByPosition(x - 1, y - 1)) clickOn(x - 1, y - 1, true); // L T
   }
   if (!(getBombsNextToButton(x - 1, y) && getBombsNextToButton(x, y + 1))) {
     if (getButtonByPosition(x - 1, y + 1)) clickOn(x - 1, y + 1); // L B
+  } else {
+    if (getButtonByPosition(x - 1, y + 1)) clickOn(x - 1, y + 1, true); // L B
   }
   if (!(getBombsNextToButton(x + 1, y) && getBombsNextToButton(x, y - 1))) {
     if (getButtonByPosition(x + 1, y - 1)) clickOn(x + 1, y - 1); // R T
+  } else {
+    if (getButtonByPosition(x + 1, y - 1)) clickOn(x + 1, y - 1, true); // R T
   }
   if (!(getBombsNextToButton(x + 1, y) && getBombsNextToButton(x, y + 1))) {
-    if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1); // R T
+    if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
+  } else {
+    if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
   }
 
   /*for (let y2 = y - 1; y2 <= y + 1; y2++) {
