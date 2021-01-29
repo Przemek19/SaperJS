@@ -56,7 +56,7 @@ input[type="number"]:focus {
   height: 32px;
   border: 0;
   margin: 2px;
-  box-shadow: inset 0 0 4px #333;
+  box-shadow: inset 0 0 4px #333, 2px 2px 4px #111;
   border-radius: 4px;
   padding: 0;
   background: #ddd;
@@ -68,6 +68,7 @@ input[type="number"]:focus {
 }
 .boardButton.clicked {
   background: #999;
+  box-shadow: inset 0 0 2px #333;
 }
 
 .stats {
