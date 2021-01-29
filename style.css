@@ -80,3 +80,13 @@ input[type="number"]:focus {
   display: inline-block;
   margin-right: 6px;
 }
+
+.link {
+  text-decoration: none;
+  color: #eee;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color:rgb(0, 153, 255);
+}
