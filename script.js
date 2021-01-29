@@ -65,7 +65,22 @@ startGameButton.onclick = () => {
   let x = xInput.value;
   let y = yInput.value;
   let bombs = bombsInput.value;
-  // TODO: Sprawdzenie poprawności wpisanych pól
+  if (x < 1) {
+    alert("You need to set/increase bombfield size!")
+    return false;
+  } 
+  if (y < 1) {
+    alert("You need to set/increase bombfield size!")
+    return false;
+  }
+  if (x * y <= bombs) {
+    alert("Too many bombs! Try reducing the amount of bombs or increasing the bombfield size.")
+    return false;
+  }
+  if (bombs < 1) {
+    alert("You need more bombs!")
+    return false;
+  }
   createGame(x, y, bombs);
 }
 
@@ -137,6 +152,10 @@ const clickOn = (x, y, nextClick) => {
   statsFieldsToReveal.innerHTML = GAME.blocksToRemove;
   bttn.className += ' clicked';
   let bombsCount = getBombsNextToButton(x, y);
+  if (GAME.blocksToRemove == 0) {
+    alert("You've won!")
+    return;
+  }
   if (bombsCount != 0) {
     bttn.innerHTML = colourNumber(bombsCount);
     return;
@@ -239,3 +258,4 @@ const lostGame = (x, y) => {
 }
 
 createGame(9, 9, 10);
+
