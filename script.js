@@ -66,19 +66,19 @@ startGameButton.onclick = () => {
   let y = yInput.value;
   let bombs = bombsInput.value;
   if (x < 1) {
-    alert("You need to set/increase bombfield size!")
+    alert("You need to set/increase bombfield size!");
     return false;
   } 
   if (y < 1) {
-    alert("You need to set/increase bombfield size!")
+    alert("You need to set/increase bombfield size!");
     return false;
   }
   if (x * y <= bombs) {
-    alert("Too many bombs! Try reducing the amount of bombs or increasing the bombfield size.")
+    alert("Too many bombs! Try reducing the amount of bombs or increasing the bombfield size.");
     return false;
   }
   if (bombs < 1) {
-    alert("You need more bombs!")
+    alert("You need more bombs!");
     return false;
   }
   createGame(x, y, bombs);
@@ -86,11 +86,12 @@ startGameButton.onclick = () => {
 
 const createGame = (xSize, ySize, bombsCount) => {
   boardBox.innerHTML = '';
+  boardBox.style.width = `${xSize * 32}px`;
   delete GAME.buttons;
   delete GAME.bombsPosition;
   GAME.buttons = [];
   GAME.bombsPosition = [];
-  delete GAME.lost;
+  delete GAME.end;
   
   GAME.bombsToFind = bombsCount;
   statsBombsToFind.innerHTML = bombsCount;
@@ -142,7 +143,7 @@ const createGame = (xSize, ySize, bombsCount) => {
 }
 
 const clickOn = (x, y, nextClick) => {
-  if (GAME.lost) return;
+  if (GAME.end) return;
 
   let bttn = getButtonByPosition(x, y);
   if (!bttn) return;
@@ -153,7 +154,8 @@ const clickOn = (x, y, nextClick) => {
   bttn.className += ' clicked';
   let bombsCount = getBombsNextToButton(x, y);
   if (GAME.blocksToRemove == 0) {
-    alert("You've won!")
+    alert("You've won!");
+    GAME.end = true;
     return;
   }
   if (bombsCount != 0) {
@@ -198,7 +200,7 @@ const clickOn = (x, y, nextClick) => {
 }
 
 const setFlag = (x, y) => {
-  if (GAME.lost) return;
+  if (GAME.end) return;
   let bttn = getButtonByPosition(x, y);
   if (bttn.className.search('clicked') != -1) return;
   if (bttn.innerHTML == '🚩') {
@@ -228,7 +230,7 @@ const getBombsNextToButton = (xPosition, yPosition) => {
 
 const colourNumber = number => {
   if (number == 1) {
-    number = `<span style='color: blue'>${number}</span>`;
+    number = `<span style='color: blue;'>${number}</span>`;
   } else if (number == 2) {
     number = `<span style='color: green'>${number}</span>`;
   } else if (number == 3) {
@@ -249,7 +251,7 @@ const colourNumber = number => {
 
 const lostGame = (x, y) => {
   if (getButtonByPosition(x, y).innerHTML == '🚩') return;
-  GAME.lost = true;
+  GAME.end = true;
   console.log('przegrana');
   for (let i in GAME.bombsPosition) {
     let bp = GAME.bombsPosition[i];

@@ -6,8 +6,8 @@
 }
 
 :root {
-  --defaultColor: rgb(0, 153, 255);
-  --defaultHoverColor: rgb(0, 183, 255);
+  --defaultColor: rgb(231, 0, 50);
+  --defaultHoverColor: rgb(199, 0, 43);
 }
 
 body {
@@ -46,7 +46,6 @@ input[type="number"]:focus {
   background: #333;
   width: fit-content;
   block-size: fit-content;
-  padding: 6px;
   margin-top: 32px;
   box-shadow: 0 0 24px var(--defaultColor);
 }
@@ -55,11 +54,11 @@ input[type="number"]:focus {
   width: 32px;
   height: 32px;
   border: 0;
-  margin: 2px;
-  box-shadow: inset 0 0 4px #333, 2px 2px 4px #111;
-  border-radius: 4px;
+  margin: 0px;
+  box-shadow: inset -3px -3px 3px #777;
   padding: 0;
   background: #ddd;
+  transition: 0.15s;
 }
 .boardButton > span {
   font-size: 16px;
@@ -68,7 +67,7 @@ input[type="number"]:focus {
 }
 .boardButton.clicked {
   background: #999;
-  box-shadow: inset 0 0 2px #333;
+  box-shadow: inset 0 0 1px #333;
 }
 
 .stats {
