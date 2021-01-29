@@ -18,14 +18,14 @@ const difficulty = {
     bombs: 10,
   },
   medium: {
-    x: 20,
-    y: 20,
-    bombs: 50
+    x: 16,
+    y: 16,
+    bombs: 40
   },
   hard: {
     x: 30,
-    y: 25,
-    bombs: 100
+    y: 16,
+    bombs: 99
   }
 }
 
