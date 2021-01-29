@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SaperJS</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <input type="number" placeholder="X" id="x">
+    <input type="number" placeholder="Y" id="y">
+    <input type="number" placeholder="Bombs Count" id="bombsCount">
+    <button id="startGameButton" class="menuButton">Start/Restart</button>
+    <button id="easyModeButton" class="menuButton">Easy</button>
+    <button id="mediumModeButton" class="menuButton">Medium</button>
+    <button id="hardModeButton" class="menuButton">Hard</button><br />
+    <div class="stats">
+      💣 <span id="statsBombsToFind">0</span>/<span id="statsBombs">0</span>
+    </div>
+    <div class="stats">
+      ⬜ <span id="statsFieldsToReveal">0</span>/<span id="statsFields">0</span>
+    </div>
+    <div id="boardBox">
+      
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
