@@ -27,6 +27,16 @@ const difficulty = {
     x: 30,
     y: 16,
     bombs: 99
+  },
+  'hard+': {
+    x: 32,
+    y: 22,
+    bombs: 300
+  },
+  impossible: {
+    x: 38,
+    y: 38,
+    bombs: 500
   }
 }
 xInput.value = difficulty.easy.x;
@@ -257,7 +267,8 @@ const clickOn = (x, y, nextClick) => {
   for (let y2 = y - 1; y2 <= y + 1; y2++) {
     for (let x2 = x - 1; x2 <= x + 1; x2++) {
       if (getButtonByPosition(x2, y2)) {
-        clickOn(x2, y2);
+        document.getElementById(`${x2}|${y2}`).click();
+        //clickOn(x2, y2);
       }
     }
   }
