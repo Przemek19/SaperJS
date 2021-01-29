@@ -143,7 +143,7 @@ const clickOn = (x, y, nextClick) => {
   }
   if (nextClick) return;
 
-  if (getButtonByPosition(x - 1, y)) clickOn(x - 1, y);
+  /*if (getButtonByPosition(x - 1, y)) clickOn(x - 1, y);
   if (getButtonByPosition(x + 1, y)) clickOn(x + 1, y);
   if (getButtonByPosition(x, y - 1)) clickOn(x, y - 1);
   if (getButtonByPosition(x, y + 1)) clickOn(x, y + 1);
@@ -167,15 +167,15 @@ const clickOn = (x, y, nextClick) => {
     if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
   } else {
     if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
-  }
+  }*/
 
-  /*for (let y2 = y - 1; y2 <= y + 1; y2++) {
+  for (let y2 = y - 1; y2 <= y + 1; y2++) {
     for (let x2 = x - 1; x2 <= x + 1; x2++) {
       if (getButtonByPosition(x2, y2)) {
         clickOn(x2, y2);
       }
     }
-  }*/
+  }
 }
 
 const setFlag = (x, y) => {
