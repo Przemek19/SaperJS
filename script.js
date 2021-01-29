@@ -65,7 +65,7 @@ startGameButton.onclick = () => {
   let x = xInput.value;
   let y = yInput.value;
   let bombs = bombsInput.value;
-  // TODO: Sprawdzenie poprawności wpisanych pól
+  if (x*y < bombs + 1) throw new Error("za duzo bomb") & alert("Za dużo bomb!");
   createGame(x, y, bombs);
 }
 
