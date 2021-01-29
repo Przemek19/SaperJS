@@ -107,13 +107,14 @@ const convertPositionToID = (xPos, yPos, xSize, ySize) => {
 const createGame = (xSize, ySize, bombsCount, safeStartPointX, safeStartPointY) => {
   restartTimer();
   let safeCoords = [];
+  stopTimer();
   GAME.isNewGame = true;
   if (safeStartPointX && safeStartPointY) {
     for (let y = safeStartPointY - 1; y <= safeStartPointY + 1; y++) {
       for (let x = safeStartPointX - 1; x <= safeStartPointX + 1; x++) {
         if (x > 0 && y > 0) {
           safeCoords.push(convertPositionToID(x, y, xSize, ySize));
-        }     
+        }
       }
     }
   }
@@ -183,6 +184,7 @@ const createGame = (xSize, ySize, bombsCount, safeStartPointX, safeStartPointY) 
 
 const setTimer = () => {
   GAME.time = 0;
+  clearInterval(GAME.timer);
   GAME.timer = setInterval(() => {
     GAME.time++;
     statsTime.innerHTML = GAME.time;
@@ -190,6 +192,7 @@ const setTimer = () => {
 }
 const restartTimer = () => {
   GAME.time = 0;
+  clearInterval(GAME.timer);
   statsTime.innerHTML = 0;
 }
 const stopTimer = () => {
