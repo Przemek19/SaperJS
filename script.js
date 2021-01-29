@@ -9,6 +9,7 @@ const statsBombsToFind = document.getElementById('statsBombsToFind');
 const statsBombs = document.getElementById('statsBombs');
 const statsFieldsToReveal = document.getElementById('statsFieldsToReveal');
 const statsFields = document.getElementById('statsFields');
+const statsTime = document.getElementById('statsTime');
 // / //
 
 const difficulty = {
@@ -28,12 +29,19 @@ const difficulty = {
     bombs: 99
   }
 }
+xInput.value = difficulty.easy.x;
+yInput.value = difficulty.easy.y;
+bombsInput.value = difficulty.easy.bombs;
 
 const GAME = {
+  x: 0,
+  y: 0,
   buttons: [],
   bombsPosition: [],
   bombsToFind: 0,
-  blocksToRemove: 0
+  blocksToRemove: 0,
+  time: 0,
+  timer: undefined
 };
 
 for (let i in difficulty) {
@@ -47,11 +55,11 @@ for (let i in difficulty) {
 const getRandomNumber = (a, b) => {
   return Math.floor(Math.random() * (b - a + 1) + a);
 }
-const getRandomNumbersFromRange = (a, b, count) => {
+const getRandomNumbersFromRange = (a, b, count, excludedNumbers = []) => {
   let numbersTable = [];
   let drawnNumbers = [];
   for (let i = a; i <= b; i++) {
-    numbersTable.push(i);
+    if (!excludedNumbers.find(eN => eN == i)) numbersTable.push(i);
   }
   for (let i = 0; i < count; i++) {
     let randomIndex = getRandomNumber(0, numbersTable.length - 1);
@@ -84,7 +92,31 @@ startGameButton.onclick = () => {
   createGame(x, y, bombs);
 }
 
-const createGame = (xSize, ySize, bombsCount) => {
+const convertPositionToID = (xPos, yPos, xSize, ySize) => {
+  let i = 1;
+  for (let y = 1; y <= ySize; y++) {
+    for (let x = 1; x <= xSize; x++) {
+      if (x == xPos && y == yPos) {
+        return i;
+      }
+      i++;
+    }
+  }
+}
+
+const createGame = (xSize, ySize, bombsCount, safeStartPointX, safeStartPointY) => {
+  restartTimer();
+  let safeCoords = [];
+  GAME.isNewGame = true;
+  if (safeStartPointX && safeStartPointY) {
+    for (let y = safeStartPointY - 1; y <= safeStartPointY + 1; y++) {
+      for (let x = safeStartPointX - 1; x <= safeStartPointX + 1; x++) {
+        if (x > 0 && y > 0) {
+          safeCoords.push(convertPositionToID(x, y, xSize, ySize));
+        }     
+      }
+    }
+  }
   boardBox.innerHTML = '';
   boardBox.style.width = `${xSize * 32}px`;
   delete GAME.buttons;
@@ -92,6 +124,8 @@ const createGame = (xSize, ySize, bombsCount) => {
   GAME.buttons = [];
   GAME.bombsPosition = [];
   delete GAME.end;
+  GAME.x = xSize;
+  GAME.y = ySize;
   
   GAME.bombsToFind = bombsCount;
   statsBombsToFind.innerHTML = bombsCount;
@@ -102,7 +136,7 @@ const createGame = (xSize, ySize, bombsCount) => {
   statsFields.innerHTML = GAME.blocksToRemove;
   
   let i = 1;
-  let bombPositions = getRandomNumbersFromRange(1, xSize * ySize, bombsCount);
+  let bombPositions = getRandomNumbersFromRange(1, xSize * ySize, bombsCount, safeCoords);
   for (let y = 1; y <= ySize; y++) {
     for (let x = 1; x <= xSize; x++) {
       let isBomb = bombPositions.find(pos => pos == i) ? true : false;
@@ -112,7 +146,7 @@ const createGame = (xSize, ySize, bombsCount) => {
       //element.className = 'boardButton';
       //boardBox.appendChild(element);
       if (isBomb) {
-        func = `lostGame(${x}, ${y})`;
+        func = `lostGame(${x}, ${y});`;
         GAME.bombsPosition.push({x: x, y: y, id: i}); 
       } else {
         func = `clickOn(${x}, ${y})`;
@@ -130,7 +164,7 @@ const createGame = (xSize, ySize, bombsCount) => {
     }
     boardBox.innerHTML += '<br>';
   }
-  let possibleStarts = [];
+  /*let possibleStarts = [];
   for (let y = 1; y <= ySize; y++) {
     for (let x = 1; x <= xSize; x++) {
       if (getBombsNextToButton(x, y) == 0 && !GAME.bombsPosition.find(bp => bp.x == x && bp.y == y)) {
@@ -139,11 +173,36 @@ const createGame = (xSize, ySize, bombsCount) => {
     }
   }
   let randomPossibleStart = possibleStarts[getRandomNumber(0, possibleStarts.length - 1)];
-  clickOn(randomPossibleStart.x, randomPossibleStart.y);
+  clickOn(randomPossibleStart.x, randomPossibleStart.y);*/
+  if (safeStartPointX && safeStartPointY) {
+    GAME.isNewGame = false;
+    clickOn(safeStartPointX, safeStartPointY);
+    setTimer();
+  }
+}
+
+const setTimer = () => {
+  GAME.time = 0;
+  GAME.timer = setInterval(() => {
+    GAME.time++;
+    statsTime.innerHTML = GAME.time;
+  }, 1000);
+}
+const restartTimer = () => {
+  GAME.time = 0;
+  statsTime.innerHTML = 0;
+}
+const stopTimer = () => {
+  clearInterval(GAME.timer);
 }
 
 const clickOn = (x, y, nextClick) => {
   if (GAME.end) return;
+
+  if (GAME.isNewGame) {
+    createGame(GAME.x, GAME.y, GAME.bombsToFind, x, y);
+    return;
+  }
 
   let bttn = getButtonByPosition(x, y);
   if (!bttn) return;
@@ -153,9 +212,11 @@ const clickOn = (x, y, nextClick) => {
   statsFieldsToReveal.innerHTML = GAME.blocksToRemove;
   bttn.className += ' clicked';
   let bombsCount = getBombsNextToButton(x, y);
+  GAME.isNewGame = false;
   if (GAME.blocksToRemove == 0) {
     alert("You've won!");
     GAME.end = true;
+    stopTimer();
     return;
   }
   if (bombsCount != 0) {
@@ -250,9 +311,14 @@ const colourNumber = number => {
 }
 
 const lostGame = (x, y) => {
+  if (GAME.isNewGame) {
+    createGame(GAME.x, GAME.y, GAME.bombsToFind, x, y);
+    return;
+  }
   if (getButtonByPosition(x, y).innerHTML == '🚩') return;
   GAME.end = true;
-  console.log('przegrana');
+  stopTimer();
+  console.log('lost');
   for (let i in GAME.bombsPosition) {
     let bp = GAME.bombsPosition[i];
     getButtonByPosition(bp.x, bp.y).innerHTML = '<span style="font-size: 14px">💣</span>';
