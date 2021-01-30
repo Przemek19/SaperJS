@@ -24,19 +24,19 @@ const difficulty = {
     bombs: 40
   },
   hard: {
-    x: 30,
-    y: 16,
+    x: 24,
+    y: 20,
     bombs: 99
   },
   'hard+': {
-    x: 32,
-    y: 22,
-    bombs: 300
+    x: 50,
+    y: 50,
+    bombs: 500
   },
   impossible: {
-    x: 38,
-    y: 38,
-    bombs: 500
+    x: 100,
+    y: 100,
+    bombs: 2000
   }
 }
 xInput.value = difficulty.easy.x;
@@ -148,43 +148,30 @@ const createGame = (xSize, ySize, bombsCount, safeStartPointX, safeStartPointY) 
   
   let i = 1;
   let bombPositions = getRandomNumbersFromRange(1, xSize * ySize, bombsCount, safeCoords);
+  let bombsHTMLCode = '';
   for (let y = 1; y <= ySize; y++) {
     for (let x = 1; x <= xSize; x++) {
-      let isBomb = bombPositions.find(pos => pos == i) ? true : false;
+      let isBomb = false;
+      if (safeStartPointX) {
+        isBomb = bombPositions.find(pos => pos == i) ? true : false;
+      }
       let func = '';
-      //let element = document.createElement('button');
-      //element.id = `${x}|${y}`;
-      //element.className = 'boardButton';
-      //boardBox.appendChild(element);
       if (isBomb) {
         func = `lostGame(${x}, ${y});`;
         GAME.bombsPosition.push({x: x, y: y, id: i}); 
       } else {
         func = `clickOn(${x}, ${y})`;
       }
-      boardBox.innerHTML += `<button id='${x}|${y}' class='boardButton' oncontextmenu='setFlag(${x}, ${y});return false' onclick='${func}'><span>&nbsp</span></button>`;
-      //if (isBomb) document.getElementById(`${x}|${y}`).style['box-shadow'] = 'inset 0 0 6px red';
+      bombsHTMLCode += `<button id='${x}|${y}' class='boardButton' oncontextmenu='setFlag(${x}, ${y});return false' onclick='${func}'><span>&nbsp</span></button>`;
       GAME.buttons.push({
-        id: i,
         x: x,
         y: y,
-        isClicked: false,
-        isBomb: isBomb
       });
       i++;
     }
     boardBox.innerHTML += '<br>';
   }
-  /*let possibleStarts = [];
-  for (let y = 1; y <= ySize; y++) {
-    for (let x = 1; x <= xSize; x++) {
-      if (getBombsNextToButton(x, y) == 0 && !GAME.bombsPosition.find(bp => bp.x == x && bp.y == y)) {
-        possibleStarts.push({x: x, y: y});
-      }
-    }
-  }
-  let randomPossibleStart = possibleStarts[getRandomNumber(0, possibleStarts.length - 1)];
-  clickOn(randomPossibleStart.x, randomPossibleStart.y);*/
+  boardBox.innerHTML = bombsHTMLCode;
   if (safeStartPointX && safeStartPointY) {
     GAME.isNewGame = false;
     clickOn(safeStartPointX, safeStartPointY);
@@ -219,7 +206,7 @@ const clickOn = (x, y, nextClick) => {
 
   let bttn = getButtonByPosition(x, y);
   if (!bttn) return;
-  if (bttn.innerHTML == '🚩') return;
+  if (bttn.innerHTML.search('🚩') != -1) return;
   if (bttn.className.search('clicked') != -1) return;
   GAME.blocksToRemove--;
   statsFieldsToReveal.innerHTML = GAME.blocksToRemove;
@@ -238,37 +225,10 @@ const clickOn = (x, y, nextClick) => {
   }
   if (nextClick) return;
 
-  /*if (getButtonByPosition(x - 1, y)) clickOn(x - 1, y);
-  if (getButtonByPosition(x + 1, y)) clickOn(x + 1, y);
-  if (getButtonByPosition(x, y - 1)) clickOn(x, y - 1);
-  if (getButtonByPosition(x, y + 1)) clickOn(x, y + 1);
-
-  if (!(getBombsNextToButton(x - 1, y) && getBombsNextToButton(x, y - 1))) {
-    if (getButtonByPosition(x - 1, y - 1)) clickOn(x - 1, y - 1); // L T
-  } else {
-    if (getButtonByPosition(x - 1, y - 1)) clickOn(x - 1, y - 1, true); // L T
-  }
-  if (!(getBombsNextToButton(x - 1, y) && getBombsNextToButton(x, y + 1))) {
-    if (getButtonByPosition(x - 1, y + 1)) clickOn(x - 1, y + 1); // L B
-  } else {
-    if (getButtonByPosition(x - 1, y + 1)) clickOn(x - 1, y + 1, true); // L B
-  }
-  if (!(getBombsNextToButton(x + 1, y) && getBombsNextToButton(x, y - 1))) {
-    if (getButtonByPosition(x + 1, y - 1)) clickOn(x + 1, y - 1); // R T
-  } else {
-    if (getButtonByPosition(x + 1, y - 1)) clickOn(x + 1, y - 1, true); // R T
-  }
-  if (!(getBombsNextToButton(x + 1, y) && getBombsNextToButton(x, y + 1))) {
-    if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
-  } else {
-    if (getButtonByPosition(x + 1, y + 1)) clickOn(x + 1, y + 1, true); // R T
-  }*/
-
   for (let y2 = y - 1; y2 <= y + 1; y2++) {
     for (let x2 = x - 1; x2 <= x + 1; x2++) {
       if (getButtonByPosition(x2, y2)) {
         document.getElementById(`${x2}|${y2}`).click();
-        //clickOn(x2, y2);
       }
     }
   }
@@ -278,11 +238,11 @@ const setFlag = (x, y) => {
   if (GAME.end) return;
   let bttn = getButtonByPosition(x, y);
   if (bttn.className.search('clicked') != -1) return;
-  if (bttn.innerHTML == '🚩') {
-    bttn.innerHTML = '<span>&nbsp</span>'
+  if (bttn.innerHTML.search('🚩') != -1) {
+    bttn.innerHTML = '<span>&nbsp</span>';
     GAME.bombsToFind++;
   } else {
-    bttn.innerHTML = '🚩'
+    bttn.innerHTML = '<span class="emoji">🚩</span>';
     GAME.bombsToFind--;
   }
   statsBombsToFind.innerHTML = GAME.bombsToFind;
@@ -329,13 +289,13 @@ const lostGame = (x, y) => {
     createGame(GAME.x, GAME.y, GAME.bombsToFind, x, y);
     return;
   }
-  if (getButtonByPosition(x, y).innerHTML == '🚩') return;
+  if (getButtonByPosition(x, y).innerHTML.search('🚩') != -1) return;
   GAME.end = true;
   stopTimer();
   console.log('lost');
   for (let i in GAME.bombsPosition) {
     let bp = GAME.bombsPosition[i];
-    getButtonByPosition(bp.x, bp.y).innerHTML = '<span style="font-size: 14px">💣</span>';
+    getButtonByPosition(bp.x, bp.y).innerHTML = '<span class="emoji">💣</span>';
   }
 }
 

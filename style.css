@@ -61,14 +61,32 @@ input[type="number"]:focus {
   background: #ddd;
   transition: 0.15s;
 }
+
+.boardButton:active:hover {
+  background: #ccc;
+}
+.boardButton:hover {
+  box-shadow: inset -4px -4px 4px #777;
+}
 .boardButton > span {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
   text-shadow: 1px 1px black;
+  position: absolute;
+  margin-top: -15px;
+  margin-left: -7px;
+}
+.boardButton > span.emoji {
+  font-size: 16px;
+  margin-left: -12px;
+  margin-top: -14px;
 }
 .boardButton.clicked {
   background: transparent;
   box-shadow: inset 0 0 1px #333;
+}
+.boardButton.clicked:active:hover {
+  background: transparent;
 }
 
 .stats {
