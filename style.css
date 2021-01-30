@@ -56,17 +56,17 @@ input[type="number"]:focus {
   height: 32px;
   border: 0;
   margin: 0px;
-  box-shadow: inset -3px -3px 3px #777;
+  box-shadow: inset -5px -5px 4px #777;
   padding: 0;
   background: #ddd;
-  transition: 0.15s;
+  transition: 0.05s;
 }
 
 .boardButton:active:hover {
   background: #ccc;
 }
 .boardButton:hover {
-  box-shadow: inset -4px -4px 4px #777;
+  box-shadow: inset -6px -6px 4px #777, -2px -2px 4px #777;
 }
 .boardButton > span {
   font-size: 24px;
